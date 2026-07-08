@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Bubble Breaker Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+<div class="veil"></div>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div>
+        <h1>Bubble Breaker Lab</h1>
+        <span>ASSUMPTION DETECTION &amp; PERSPECTIVE ENGINE</span>
+      </div>
+    </div>
+    <div class="hdr-actions">
+      <select id="modeSelect" title="Bubble Mode"></select>
+      <div class="icon-btn" id="mapBtn" title="Bubble Map">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6" cy="6" r="2.4"/><circle cx="18" cy="6" r="2.4"/><circle cx="12" cy="18" r="2.4"/><path d="M8 7l3 9M16 7l-3 9M8.4 6h7.2"/></svg>
+      </div>
+      <div class="icon-btn" id="historyBtn" title="Bubble History">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5"/><path d="M12 7v5l3 3"/></svg>
+      </div>
+      <div class="icon-btn" id="settingsBtn" title="AI Connection">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.36.5.6.9.6H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span class="badge-dot" id="keyBadge"></span>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <h2>Paste a belief.<br><em>Watch the bubble break.</em></h2>
+    <p>Drop in a sentence, quote, headline, or philosophy. The lab won't tell you what to think — it'll show you the assumptions holding your thought together, and what the world looks like from twelve other angles.</p>
+
+    <div class="input-panel">
+      <textarea id="bubbleInput" placeholder="Paste any sentence, belief, quote, idea, headline, philosophy, religious statement, political statement, business idea, or personal belief..."></textarea>
+      <div class="input-footer">
+        <span class="char-count" id="charCount">0 characters</span>
+        <button class="break-btn" id="breakBtn">🫧 Break the Bubble</button>
+      </div>
+    </div>
+
+    <div class="meter-row" id="meterRow" style="display:none;">
+      <span>🫧 BUBBLE DENSITY</span>
+      <div class="meter-track"><div class="meter-fill" id="meterFill"></div></div>
+      <span class="meter-label" id="meterLabel">—</span>
+    </div>
+  </section>
+
+  <div class="thinking" id="thinking"><span class="pulse-dot"></span><span id="thinkingText">Neurons connecting…</span></div>
+
+  <div id="results"></div>
+
+  <footer>BUBBLE BREAKER LAB · every bubble is a hypothesis, not a verdict</footer>
+</div>
+
+<!-- History Drawer -->
+<div class="drawer" id="drawer">
+  <h3>🫧 BUBBLE HISTORY</h3>
+  <input type="text" id="histSearch" placeholder="Search saved bubbles...">
+  <div id="histList"></div>
+</div>
+
+<!-- Settings Modal -->
+<div class="modal-backdrop" id="settingsModal">
+  <div class="modal">
+    <h3>AI CONNECTION</h3>
+    <p>This lab uses Claude to generate each bubble break. When previewed inside Claude, it connects automatically — no key needed. To run it standalone (e.g. on GitHub Pages), paste your own Anthropic API key below. It's stored only in this browser's local storage.</p>
+    <input type="password" id="apiKeyInput" placeholder="sk-ant-... (optional)">
+    <div class="modal-actions">
+      <button class="btn-ghost" id="clearKeyBtn">Clear Key</button>
+      <button class="btn-solid" id="saveKeyBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bubble Map -->
+<div class="map-overlay" id="mapOverlay">
+  <div class="map-head">
+    <h3>🫧 BRAIN GALAXY — YOUR BUBBLE MAP</h3>
+    <div class="icon-btn" id="closeMapBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </div>
+  </div>
+  <canvas id="mapCanvas"></canvas>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
